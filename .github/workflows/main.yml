@@ -1,0 +1,17 @@
+name: Plagiarism Check
+on: [pull_request]
+jobs:
+  plagiarism-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run JPlag for Plagiarism Detection
+        run: |
+          wget https://github.com/jplag/JPlag/releases/latest/download/jplag-cli.jar
+          java -jar jplag-cli.jar -l python -s .
+          if [ -f "report/index.html" ]; then
+            echo "Plagiarism detected! PR rejected."
+            exit 1
+          fi
